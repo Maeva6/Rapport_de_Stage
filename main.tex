@@ -1,0 +1,139 @@
+% ============================================================
+%  Rapport de stage — Mise en place, configuration, déploiement
+%  d'un serveur web sécurisé et hébergement de plusieurs
+%  applications web
+%
+%  Compilation : pdflatex main.tex (x2 pour la table des matières)
+%  Chaque partie est dans chapters/ — modifiable indépendamment
+%  au fur et à mesure de l'avancement du stage.
+% ============================================================
+\documentclass[a4paper,12pt,oneside]{report}
+
+% ---------- Langue & encodage ----------
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% ---------- Mise en page ----------
+\usepackage[margin=2.5cm,headheight=14pt]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ---------- Titres ----------
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{0pt}{28pt}
+
+% ---------- En-têtes / pieds de page ----------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\leftmark}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Couleurs & liens ----------
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{16283D}
+\usepackage[
+  colorlinks=true,
+  linkcolor=accent,
+  citecolor=accent,
+  urlcolor=accent,
+  bookmarksopen=true
+]{hyperref}
+
+% ---------- Images, tableaux, code ----------
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{listings}
+
+% Style pour extraits de config/commandes (docker-compose.yml, Jenkinsfile, bash...)
+\lstdefinestyle{devops}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{black!4},
+  frame=single,
+  rulecolor=\color{black!20},
+  breaklines=true,
+  showstringspaces=false,
+  keywordstyle=\color{accent}\bfseries,
+  commentstyle=\color{black!45}\itshape,
+  numbers=left,
+  numberstyle=\tiny\color{black!40},
+  tabsize=2,
+}
+\lstset{style=devops}
+
+% ---------- Annexes ----------
+\usepackage[toc,page]{appendix}
+
+\begin{document}
+
+% ============================================================
+%  PAGE DE GARDE
+% ============================================================
+\input{chapters/00_page_de_garde}
+
+% ============================================================
+%  REMERCIEMENTS
+% ============================================================
+\input{chapters/01_remerciements}
+
+% ============================================================
+%  SOMMAIRE
+% ============================================================
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ============================================================
+%  INTRODUCTION
+% ============================================================
+\input{chapters/02_introduction}
+
+% ============================================================
+%  PARTIE 1 — CONTEXTE
+% ============================================================
+\input{chapters/03_contexte}
+
+% ============================================================
+%  PARTIE 2 — BESOIN & CAHIER DES CHARGES
+% ============================================================
+\input{chapters/04_besoin}
+
+% ============================================================
+%  PARTIE 3 — MISE EN ŒUVRE TECHNIQUE
+% ============================================================
+\input{chapters/05_infrastructure}
+\input{chapters/06_securisation}
+\input{chapters/07_cicd_qualite}
+\input{chapters/08_hebergement_multi_apps}
+\input{chapters/09_supervision}
+
+% ============================================================
+%  PARTIE 4 — BILAN
+% ============================================================
+\input{chapters/10_bilan}
+
+% ============================================================
+%  CONCLUSION
+% ============================================================
+\input{chapters/11_conclusion}
+
+% ============================================================
+%  ANNEXES
+% ============================================================
+\begin{appendices}
+  \input{annexes/annexe_A_architecture}
+  \input{annexes/annexe_B_extraits_config}
+  \input{annexes/annexe_C_glossaire}
+\end{appendices}
+
+\end{document}

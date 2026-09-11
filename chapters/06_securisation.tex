@@ -1,0 +1,29 @@
+\chapter{Sécurisation du serveur}
+\label{chap:securisation}
+% Correspond à la phase 01 de la feuille de route.
+
+\section{HTTPS avec Traefik et Let's Encrypt}
+% TODO : reverse proxy Traefik, réseau Docker partagé
+% (dashboard-app_devops-net), certificats automatiques via DuckDNS.
+[À rédiger.]
+
+\section{Authentification et protection anti-brute-force}
+% TODO : Basic Auth, comparaison en temps constant (timingSafeEqual),
+% verrouillage progressif par IP (5 échecs -> 30 s, jusqu'à 15 min),
+% réponse 429 + en-tête Retry-After.
+\begin{lstlisting}[language=bash,caption={Réponse du serveur après verrouillage},label={lst:429}]
+HTTP/1.1 429 Too Many Requests
+Retry-After: 900
+\end{lstlisting}
+
+\section{Pare-feu et surface d'exposition réseau}
+% TODO : règles UFW (restriction du port 3000 au sous-réseau local),
+% raisons du choix sous-réseau plutôt qu'IP unique.
+[À rédiger.]
+
+\section{Durcissement SSH et Fail2ban}
+% TODO : authentification par clé, désactivation du login root,
+% règles Fail2ban, surveillance de auth.log.
+[À rédiger.]
+
+\clearpage

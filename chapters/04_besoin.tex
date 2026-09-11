@@ -1,0 +1,38 @@
+\chapter{Analyse du besoin}
+\label{chap:besoin}
+
+\section{Objectifs de la mission}
+% TODO : reformuler le thème du stage en objectifs concrets —
+% sécuriser l'accès au serveur, industrialiser le déploiement,
+% héberger plusieurs applications web de façon isolée et supervisée.
+[À rédiger.]
+
+\section{Contraintes}
+% TODO : contraintes techniques (matériel disponible, réseau local,
+% budget nul/quasi nul -> outils open-source et gratuits), contraintes
+% de temps (16 semaines), contraintes de sécurité.
+[À rédiger.]
+
+\section{Choix technologiques}
+% TODO : justifier les choix (Docker/Docker Compose, Traefik, Jenkins,
+% Node.js/Express, etc.) — un tableau récapitulatif est utile ici.
+\begin{table}[h]
+  \centering
+  \begin{tabularx}{\textwidth}{@{}lX@{}}
+    \toprule
+    \textbf{Besoin} & \textbf{Solution retenue} \\
+    \midrule
+    Virtualisation & Proxmox VE \\
+    Isolation des applications & Docker / Docker Compose \\
+    Reverse proxy \& HTTPS & Traefik + Let's Encrypt \\
+    Nom de domaine dynamique & DuckDNS \\
+    Intégration / déploiement continu & Jenkins \\
+    Pare-feu & UFW \\
+    Protection brute-force SSH & Fail2ban \\
+    Alerting & Webhooks Discord \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Correspondance besoin / solution technique}
+\end{table}
+
+\clearpage

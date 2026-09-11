@@ -1,0 +1,28 @@
+\chapter{Mise en place de l'infrastructure}
+\label{chap:infra}
+% Correspond à la phase 01 de la feuille de route (socle).
+
+\section{Architecture générale}
+% TODO : schéma Proxmox VE (hôte physique) -> VM Ubuntu (deploy-vm,
+% 192.168.1.130) -> conteneurs Docker. Renvoyer vers l'annexe A pour
+% le schéma détaillé.
+[À rédiger — voir Annexe~\ref{annexe:architecture}.]
+
+\section{Préparation du serveur physique (Proxmox VE)}
+% TODO : installation, configuration réseau/stockage du serveur Proxmox.
+[À rédiger.]
+
+\section{Création et configuration de la VM Ubuntu}
+% TODO : dimensionnement, réseau, durcissement de base (utilisateurs,
+% mises à jour, SSH).
+[À rédiger.]
+
+\section{Conteneurisation avec Docker}
+% TODO : pourquoi Docker/Docker Compose, structure des services,
+% volumes, réseaux.
+\begin{lstlisting}[language=bash,caption={Exemple de démarrage d'un service},label={lst:compose-up}]
+docker compose up -d --build
+curl -s http://localhost:3000/health
+\end{lstlisting}
+
+\clearpage
