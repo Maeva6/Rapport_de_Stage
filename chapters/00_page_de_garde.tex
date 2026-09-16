@@ -4,27 +4,57 @@
 \begin{titlepage}
   \centering
 
-  % \includegraphics[width=4cm]{logo_school.png}\hfill
-  % \includegraphics[width=4cm]{logo_host.png}
+  % ---------- Top colour band: institution ----------
+  \noindent
+  \begin{tcolorbox}[
+    enhanced, colback=accent, colframe=accent, coltext=white,
+    boxrule=0pt, arc=0pt, outer arc=0pt,
+    left=0pt, right=0pt, top=10pt, bottom=10pt,
+    width=\textwidth, halign=center
+  ]
+  {\small\bfseries\MakeUppercase{[Institution name]} \quad\textbar\quad [Programme / Year]}
+  \end{tcolorbox}
 
-  \vspace*{1.5cm}
-  {\large [Institution name] — [Programme / Year]\par}
-  \vspace{2.5cm}
+  \vspace{2.2cm}
+  % \includegraphics[width=3.5cm]{logo_school.png}\hfill
+  % \includegraphics[width=3.5cm]{logo_host.png}
 
-  {\Huge\bfseries Internship Report\par}
-  \vspace{0.8cm}
-  {\large\itshape Setting up, configuring and deploying\\
-  a secure web server and hosting\\
-  multiple web applications\par}
+  {\large\scshape Internship Report\par}
+  \vspace{0.6cm}
+  {\Huge\bfseries Secure Web Server \& Multi-Application Hosting\par}
+  \vspace{0.5cm}
+  {\color{accent}\rule{0.35\textwidth}{1.4pt}\par}
+  \vspace{0.6cm}
+  {\large\itshape Setting up, configuring and deploying a secure web server,\\
+  and hosting multiple web applications on it\par}
 
-  \vspace{2.5cm}
-  \begin{tabularx}{0.8\textwidth}{@{}lX@{}}
-    \textbf{Intern} & Maeva \\
-    \textbf{Host organisation} & Ucac-Icam \\
-    \textbf{Industry supervisors} & Fr. Maximilien Bossou, Mr. Christian Aboudi \\
+  \vspace{1.6cm}
+  \begin{minipage}{0.82\textwidth}
+    \small\centering
+    A physical server turned into an operational hosting platform: HTTPS
+    exposure adapted to a real network constraint (CGNAT), authenticated
+    and rate-limited access, a hardened firewall and SSH configuration,
+    a Jenkins pipeline that blocks on failing tests, verified backups,
+    and full-stack supervision with proactive alerting.
+  \end{minipage}
+
+  \vspace{1.8cm}
+  \begin{tcolorbox}[
+    enhanced, colback=white, colframe=accent!60,
+    boxrule=0.6pt, arc=2pt,
+    left=16pt, right=16pt, top=10pt, bottom=10pt,
+    width=0.82\textwidth
+  ]
+  \begin{tabularx}{\linewidth}{@{}lX@{}}
+    \textbf{Intern} & Maeva \\[2pt]
+    \textbf{Host organisation} & Ucac-Icam \\[2pt]
+    \textbf{Industry supervisors} & Fr. Maximilien Bossou, Mr. Christian Aboudi \\[2pt]
     \textbf{Period} & 10 September 2026 -- 10 January 2027 \\
   \end{tabularx}
+  \end{tcolorbox}
 
   \vfill
-  {\large [City], [defence date]\par}
+  {\color{accent}\rule{\textwidth}{0.6pt}\par}
+  \vspace{6pt}
+  {\small [City], [defence date]\par}
 \end{titlepage}

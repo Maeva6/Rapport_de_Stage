@@ -12,7 +12,12 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+
+% ---------- Typography (Springer Nature LaTeX template font stack) ----------
+% Times-based text + math fonts, as used by Springer Nature's own
+% sn-jnl template (newtxtext/newtxmath rather than the LaTeX default).
+\usepackage{newtxtext}
+\usepackage[varvw]{newtxmath}
 
 % ---------- Page layout ----------
 \usepackage[margin=2.5cm,headheight=14pt]{geometry}
@@ -71,6 +76,10 @@
 % ---------- Appendices ----------
 \usepackage[toc,page]{appendix}
 
+% ---------- Title page design ----------
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
 \begin{document}
 
 % ============================================================
@@ -108,23 +117,28 @@
 \input{chapters/04_besoin}
 
 % ============================================================
+%  PROJECT MANAGEMENT
+% ============================================================
+\input{chapters/05_gestion_projet}
+
+% ============================================================
 %  PART 3 — TECHNICAL IMPLEMENTATION
 % ============================================================
-\input{chapters/05_infrastructure}
-\input{chapters/06_securisation}
-\input{chapters/07_cicd_qualite}
-\input{chapters/08_hebergement_multi_apps}
-\input{chapters/09_supervision}
+\input{chapters/06_infrastructure}
+\input{chapters/07_securisation}
+\input{chapters/08_cicd_qualite}
+\input{chapters/09_hebergement_multi_apps}
+\input{chapters/10_supervision}
 
 % ============================================================
 %  PART 4 — OUTCOMES
 % ============================================================
-\input{chapters/10_bilan}
+\input{chapters/11_bilan}
 
 % ============================================================
 %  CONCLUSION
 % ============================================================
-\input{chapters/11_conclusion}
+\input{chapters/12_conclusion}
 
 % ============================================================
 %  APPENDICES

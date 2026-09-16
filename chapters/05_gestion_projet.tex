@@ -1,0 +1,32 @@
+\chapter{Project management}
+\label{chap:gestion}
+
+\section{Methodology}
+The project was run iteratively rather than against a specification fixed at the outset: the theme set the destination, but the order and the exact scope of each step were adjusted as earlier steps were completed and, at times, as they revealed constraints that were not visible in advance (the network's CGNAT limitation described in chapter~\ref{chap:securisation} is the clearest example). Work was organised into four successive phases, each with a fixed time box and a small number of concrete objectives, rather than a single long list of tasks tackled in no particular order. Within a phase, security-sensitive changes always followed the same discipline: apply the smallest safe step, verify it independently of the change itself (a second terminal, an external request, an effective-configuration dump) before moving on, and only then proceed to the next step -- most visibly for SSH hardening (chapter~\ref{chap:securisation}), where the order of operations (confirm key-based login, only then disable password authentication) is precisely what avoiding a lockout depends on.
+
+\section{Planning and tracking}
+Progress was tracked against a living roadmap covering the sixteen weeks of the internship, broken down into four phases of four weeks each. Every task on it carries one of three states -- \emph{done}, \emph{in progress}, or \emph{planned} -- updated as work actually happened rather than as originally scheduled, so the roadmap reflects the real state of the project at any point rather than the initial plan. Table~\ref{tab:roadmap} summarises the four phases as of the time of writing.
+
+\begin{table}[h]
+  \centering
+  \begin{tabularx}{\textwidth}{@{}llX@{}}
+    \toprule
+    \textbf{Phase} & \textbf{Period} & \textbf{Status} \\
+    \midrule
+    1. Foundation \& server hardening & 10 Sep -- 10 Oct 2026 & Done -- authentication, HTTPS, firewall, SSH hardening \\
+    2. Quality, CI/CD \& 2nd application & 10 Oct -- 10 Nov 2026 & Partly done -- Jenkins, tests and verified backups done; second application pending \\
+    3. Supervision \& 3rd application & 10 Nov -- 10 Dec 2026 & Partly done -- alerting and Proxmox supervision done; third application pending \\
+    4. Audit, industrialisation \& handover & 10 Dec 2026 -- 10 Jan 2027 & Planned \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Roadmap phases and status at the time of writing}
+  \label{tab:roadmap}
+\end{table}
+
+\section{Version control and change discipline}
+Every change to the platform's configuration and to the supervision dashboard's own source code is committed to Git individually, with a message describing the intent of that specific change rather than a batch of unrelated edits grouped together. This granularity turned out to matter beyond bookkeeping: it is what made it practical to isolate, for instance, exactly which change had caused a given container to pick up stale environment variables (chapter~\ref{chap:bilan}), by narrowing down which commit changed the relevant file. Each significant step was also validated in a running environment before being considered complete -- either directly on \texttt{deploy-vm} for infrastructure changes, or against a local preview for the dashboard's own frontend -- rather than assumed correct from the configuration alone.
+
+\section{Risk management}
+The main risk that materialised during the internship was an incorrect assumption about the network, not a technical failure in the strict sense: the original security plan assumed a directly reachable public IPv4 address would eventually be available, and the reverse-proxy configuration was built around that assumption before it was tested against the real network. Rather than treat this as a blocking failure, the response was to keep the already-built Traefik/Let's Encrypt path documented for the day a public IPv4 address is available, and add a second, CGNAT-compatible path (Cloudflare Tunnel) alongside it -- containing the risk to a redesign of one component instead of the whole security chapter. The same discovered constraint also mitigated a risk that had not been anticipated at all: an IPv6 exposure the CGNAT-based reasoning had missed (chapter~\ref{chap:securisation}), caught by re-auditing firewall rules rather than assumed safe because "the network is behind CGNAT".
+
+\clearpage
