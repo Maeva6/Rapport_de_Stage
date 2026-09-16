@@ -1,26 +1,22 @@
-\chapter{Mise en place de l'infrastructure}
+\chapter{Setting up the infrastructure}
 \label{chap:infra}
-% Correspond à la phase 01 de la feuille de route (socle).
+% Corresponds to phase 01 of the roadmap (foundation).
 
-\section{Architecture générale}
-% TODO : schéma Proxmox VE (hôte physique) -> VM Ubuntu (deploy-vm,
-% 192.168.1.130) -> conteneurs Docker. Renvoyer vers l'annexe A pour
-% le schéma détaillé.
-[À rédiger — voir Annexe~\ref{annexe:architecture}.]
+\section{Overall architecture}
+The platform is organised in three layers: the physical server running Proxmox VE (the hypervisor), a single Ubuntu Server guest virtual machine (\texttt{deploy-vm}) that hosts everything else, and, inside that VM, a set of Docker containers — one per service or application. See Appendix~\ref{annexe:architecture} for the full architecture diagram. This layered approach keeps the physical host untouched by application-level changes: everything that evolves day to day (adding an application, changing a configuration) happens inside the VM or inside a container, while the hypervisor layer stays stable.
 
-\section{Préparation du serveur physique (Proxmox VE)}
-% TODO : installation, configuration réseau/stockage du serveur Proxmox.
-[À rédiger.]
+One practical consequence of running on a home/shared network worth noting here: the VM's local IP address changed during the internship (from \texttt{192.168.1.130} to \texttt{192.168.1.98}) following a change of network. Every place in the documentation and in the application that referenced the old address had to be located and updated — a good illustration of why later chapters favour mechanisms that do not depend on a fixed IP address (Cloudflare Tunnel, see chapter~\ref{chap:securisation}).
 
-\section{Création et configuration de la VM Ubuntu}
-% TODO : dimensionnement, réseau, durcissement de base (utilisateurs,
-% mises à jour, SSH).
-[À rédiger.]
+\section{Preparing the physical server (Proxmox VE)}
+The physical server already had Proxmox VE installed and reachable on the local network before the internship began (see chapter~\ref{chap:contexte}). The work here consisted of confirming the storage and network configuration inherited from that base install, and creating an API token (with the read-only \texttt{PVEAuditor} role) so that the supervision dashboard developed later could query the hypervisor's status without holding full administrative rights over it.
 
-\section{Conteneurisation avec Docker}
-% TODO : pourquoi Docker/Docker Compose, structure des services,
-% volumes, réseaux.
-\begin{lstlisting}[language=bash,caption={Exemple de démarrage d'un service},label={lst:compose-up}]
+\section{Creating and configuring the Ubuntu VM}
+A single Ubuntu Server virtual machine, \texttt{deploy-vm}, was created to host every application. Its base configuration follows standard hardening practice for a freshly provisioned machine: a dedicated non-root user for day-to-day operations, the system kept up to date, and SSH access enabled from the very first boot (later hardened further, see chapter~\ref{chap:securisation}).
+
+\section{Containerising with Docker}
+Every application on the server runs as a Docker container, orchestrated with Docker Compose. This choice was made for three reasons: it isolates each application's dependencies from the others and from the host; it makes a deployment reproducible (the exact same \texttt{docker-compose.yml} can be re-run on a fresh machine); and it keeps the update path simple — a new version is a rebuild and a restart, not a manual reinstall.
+
+\begin{lstlisting}[language=bash,caption={Starting a service},label={lst:compose-up}]
 docker compose up -d --build
 curl -s http://localhost:3000/health
 \end{lstlisting}

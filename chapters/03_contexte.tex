@@ -1,19 +1,15 @@
-\chapter{Contexte du stage}
+\chapter{Context}
 \label{chap:contexte}
 
-\section{La structure d'accueil}
-% TODO : présenter la structure (école/labo/entreprise), son activité,
-% son organisation, le service ou l'équipe d'accueil.
-[À rédiger.]
+\section{The host organisation}
+% TODO: add one or two paragraphs describing Ucac-Icam, its activity,
+% and the lab/service the internship was hosted in.
+[To be written.]
 
-\section{Le parc informatique existant}
-% TODO : décrire ce qui existait avant le stage — notamment le serveur
-% physique Proxmox VE (192.168.1.97) et son rôle dans l'infrastructure.
-[À rédiger.]
+\section{Existing infrastructure}
+Before the internship began, the host organisation already owned a physical server intended to run Proxmox VE, but it had not yet been put into production: the hypervisor was installed and reachable on the local network (\texttt{192.168.1.97}) with the base configuration already carried out, without any virtual machine actually hosting a service. The lab (under the responsibility of Mr. Jill) provided the physical access and the local network the server operates on.
 
-\section{Positionnement du stage}
-% TODO : situer la mission dans l'organisation (qui a demandé le projet,
-% pour quel usage final, quelles contraintes de départ).
-[À rédiger.]
+\section{Positioning of the internship}
+The internship's mission was to take this dormant physical server and turn it into a genuine hosting platform: create and configure a guest virtual machine, deploy a first real application on it (a supervision dashboard, later used as the reference application for the rest of the project), and progressively harden the whole stack to a level suitable for exposing services beyond the local network. The theme was assigned directly by the industry supervisors, who remained the main point of validation for each successive addition to the project.
 
 \clearpage

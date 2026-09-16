@@ -1,26 +1,17 @@
-\chapter{Intégration continue et qualité}
+\chapter{Continuous integration and quality}
 \label{chap:cicd}
-% Correspond à la phase 02 de la feuille de route.
+% Corresponds to phase 02 of the roadmap.
 
-\section{Pipeline Jenkins}
-% TODO : déclenchement par webhook GitHub (+ pollSCM en filet de
-% sécurité), étapes Checkout -> Test -> Build & Deploy -> Health check.
-[À rédiger.]
+\section{Jenkins pipeline}
+A Jenkins Declarative Pipeline builds and redeploys the dashboard automatically. It runs four stages in sequence — checkout, test, build \& deploy, health check — and, critically, the deployment stage is unreachable if the test stage fails: a broken change never reaches production. Triggering is handled by a GitHub webhook for near-instant deployment, with a 20-minute SCM poll kept as a fallback in case the webhook delivery ever fails silently.
 
-\section{Tests automatisés}
-% TODO : node --test, ce qui est testé (parsing SSH, auth, routes API),
-% pourquoi le déploiement est bloqué si un test échoue.
-[À rédiger.]
+\section{Automated tests}
+The test suite runs on Node.js's built-in test runner (\texttt{node --test}), which requires no extra dependency. It covers pure functions (SSH log line parsing, private-IP detection), the authentication middleware (including the anti-brute-force lockout behaviour described in chapter~\ref{chap:securisation}), and the API routes through short-lived HTTP servers started on ephemeral ports for the duration of a test. The Jenkins pipeline runs this suite inside an ephemeral, disposable \texttt{node:20-alpine} container rather than on the host directly, so the test environment matches a clean machine rather than whatever happens to already be installed on the VM.
 
-\section{Vérification réelle des sauvegardes}
-% TODO : verify_backup.sh, ce qu'il contrôle (intégrité de l'archive,
-% fraîcheur), alerte Discord en cas d'échec.
-[À rédiger.]
+\section{Verifying that backups actually work}
+A backup that has never been restored is only a hypothesis. A dedicated script, run a few minutes after the nightly backup job, opens the freshly produced archive, checks that it is not corrupted, and confirms the application directory it is supposed to contain is actually present inside it — then writes the result to a file the dashboard reads and displays, and sends a Discord alert if the check fails.
 
-\section{Difficultés rencontrées}
-% TODO : ex. permissions Jenkins/Git (ACL, safe.directory), DNS
-% instable, conflits de noms de conteneurs — comment elles ont été
-% diagnostiquées et résolues.
-[À rédiger.]
+\section{Difficulties encountered}
+Getting Jenkins to build from the exact same working directory as the intern's own manual deployments (needed so both share the same \texttt{data/} folder and container names) surfaced a chain of independent permission issues that had to be diagnosed one layer at a time: a DNS resolution fault on the VM unrelated to Jenkins itself (traced to \texttt{systemd-resolved} instability and fixed by forcing reliable DNS servers); Jenkins' own user lacking write access not just to the project folder but to its \emph{parent} directory, where Jenkins creates a sibling control directory; and finally Git's "dubious ownership" protection (CVE-2022-24765) refusing to operate in a directory owned by a different user than the one running the command, resolved by explicitly marking the directory as safe for Jenkins' user. Each layer produced a distinct, initially confusing error message, and the only way through was to reproduce the exact failing command directly as the \texttt{jenkins} user via \texttt{sudo -u jenkins}, rather than iterate through the Jenkins web UI.
 
 \clearpage

@@ -1,29 +1,23 @@
-\chapter{Sécurisation du serveur}
+\chapter{Securing the server}
 \label{chap:securisation}
-% Correspond à la phase 01 de la feuille de route.
+% Corresponds to phase 01 of the roadmap.
 
-\section{HTTPS avec Traefik et Let's Encrypt}
-% TODO : reverse proxy Traefik, réseau Docker partagé
-% (dashboard-app_devops-net), certificats automatiques via DuckDNS.
-[À rédiger.]
+\section{HTTPS: from Traefik to Cloudflare Tunnel}
+The original plan for HTTPS was conventional: run Traefik as a reverse proxy in front of every application container, and let it obtain certificates automatically from Let's Encrypt via the HTTP-01 challenge, which requires ports 80 and 443 to be reachable from the Internet. This was implemented first, including a pre-flight check to make sure the Docker network Traefik and the application share (\texttt{dashboard-app\_devops-net}, declared as \texttt{external} in \texttt{docker-compose.yml}) actually exists before starting the stack.
 
-\section{Authentification et protection anti-brute-force}
-% TODO : Basic Auth, comparaison en temps constant (timingSafeEqual),
-% verrouillage progressif par IP (5 échecs -> 30 s, jusqu'à 15 min),
-% réponse 429 + en-tête Retry-After.
-\begin{lstlisting}[language=bash,caption={Réponse du serveur après verrouillage},label={lst:429}]
-HTTP/1.1 429 Too Many Requests
-Retry-After: 900
-\end{lstlisting}
+It turned out to be unusable as the sole path: the server's Internet connection is a shared Starlink link, and testing showed it sits behind Carrier-Grade NAT on IPv4 — there is no public IPv4 address to route a certificate challenge to, and no router the intern has access to configure port forwarding on. Rather than abandon the reverse-proxy setup, the two paths were kept side by side and the choice made explicit: if a public IPv4 address is ever available, the Traefik/Let's Encrypt path documented above applies directly; on the current CGNAT network, a \textbf{Cloudflare Tunnel} is used instead.
 
-\section{Pare-feu et surface d'exposition réseau}
-% TODO : règles UFW (restriction du port 3000 au sous-réseau local),
-% raisons du choix sous-réseau plutôt qu'IP unique.
-[À rédiger.]
+A Cloudflare Tunnel works in the opposite direction from a classic reverse proxy: instead of waiting for inbound connections, a small agent (\texttt{cloudflared}) running as its own container opens an \emph{outbound} connection to Cloudflare, which then forwards public HTTPS traffic to it. Since the connection is outbound, it crosses CGNAT without any port forwarding at all, and Cloudflare terminates TLS at its own edge. In its free "Quick Tunnel" mode (no Cloudflare account required) it proved reliable enough to validate the approach, but with one real limitation: the public URL is regenerated every time the container restarts, which happens whenever the shared Starlink connection itself resets. That is acceptable for development but not for a URL that needs to be handed to a supervisor or demonstrated live, which is why acquiring a proper domain name and moving to a \emph{Named} Tunnel (a fixed identity that survives reconnections) is documented as the next step rather than treated as optional polish.
 
-\section{Durcissement SSH et Fail2ban}
-% TODO : authentification par clé, désactivation du login root,
-% règles Fail2ban, surveillance de auth.log.
-[À rédiger.]
+\section{Application authentication and anti-brute-force protection}
+The dashboard itself is protected by HTTP Basic Auth, with credentials compared using a constant-time comparison (\texttt{crypto.timingSafeEqual}) to avoid timing side-channels. On top of that, a custom in-memory rate limiter locks out an IP address after five failed attempts, with an exponential backoff (30 seconds, doubling up to a 15-minute cap) and a \texttt{429} response carrying a \texttt{Retry-After} header — so a failed guess is never even checked against the real credentials once an IP is locked out. Because the dashboard sits behind a reverse proxy (Traefik or Cloudflare Tunnel), the application trusts the proxy's \texttt{X-Forwarded-For} header (Express's \texttt{trust proxy} setting) to rate-limit by the real client IP rather than the proxy's own address, which would otherwise lock out every visitor at once.
+
+\section{Network firewall (UFW)}
+UFW is used to restrict which services are reachable from where. The dashboard's direct port (3000) and the administrative interfaces of Traefik and Jenkins (8000, 8080, 8081) are limited to the local subnet only, on top of application-level authentication, rather than left open to any source.
+
+An initial audit of the live firewall rules (\texttt{sudo ufw status numbered}) found that this restriction had in fact never been applied — every one of those ports was still allowed from "Anywhere". Investigating further surfaced a second, more specific issue: while the network's IPv4 address is behind CGNAT, its IPv6 address is not — Starlink routes a real, publicly reachable IPv6 prefix to the connection. UFW rules created with a bare \texttt{ufw allow PORT/tcp} are applied to both IPv4 and IPv6 simultaneously, so those ports were, in principle, directly reachable from the public Internet over IPv6 the whole time, independently of the CGNAT reasoning that justified using a tunnel for HTTPS in the first place. Both issues were fixed together by replacing the blanket rules with subnet-scoped ones for IPv4 and removing the IPv6 counterparts entirely for the administrative ports.
+
+\section{SSH hardening}
+SSH hardening was applied in a fixed order, chosen specifically to avoid a lockout: first install the intern's public key on the server and confirm a key-based login actually works from a second terminal, and only then disable password authentication — never the reverse. Once confirmed, \texttt{PasswordAuthentication} and \texttt{PermitRootLogin} were both set to \texttt{no} in \texttt{sshd\_config}, and the change was verified on three levels: the configuration file itself, the \emph{effective} configuration actually served by the daemon (\texttt{sudo sshd -T}, which resolves any overriding drop-in file), and a real-world test forcing a password-only login attempt from outside, which was rejected immediately. That middle step mattered in practice: Ubuntu ships a cloud-init drop-in file under \texttt{/etc/ssh/sshd\_config.d/} that can silently force password authentication back on even after the main configuration file has been edited correctly, and only inspecting the effective configuration reveals it. Fail2ban's \texttt{sshd} jail was also confirmed active as a complementary layer against repeated login attempts.
 
 \clearpage

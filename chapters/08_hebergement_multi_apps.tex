@@ -1,25 +1,15 @@
-\chapter{Hébergement de plusieurs applications web}
+\chapter{Hosting multiple web applications}
 \label{chap:multiapps}
-% Correspond aux phases 02 et 03 de la feuille de route.
+% Corresponds to phases 02 and 03 of the roadmap.
 
-\section{Principe retenu}
-% TODO : un conteneur par application, un sous-domaine DuckDNS par
-% application, routage Traefik indépendant.
-[À rédiger.]
+\section{Principle adopted}
+The platform hosts each application as its own Docker container, exposed under its own subdomain (for example \texttt{dashboard.example.org}, \texttt{app2.example.org}), all routed through the same tunnel described in chapter~\ref{chap:securisation}. The key property this gives the platform is that adding a new application never requires buying a new domain: once the root domain is registered and its DNS delegated to Cloudflare, an unlimited number of subdomains can be created at no extra cost, each pointing to a different application. This mechanism, and the cost analysis behind acquiring a first domain for the project, was written up separately for the supervisors (see the standalone technical note referenced in the deployment guide) and is only summarised here.
 
-\section{Isolation réseau entre applications}
-% TODO : réseau Docker dédié par application, pas d'accès direct
-% inter-conteneurs, exposition uniquement via Traefik.
-[À rédiger.]
+\section{Network isolation between applications}
+Each application is planned to run on its own Docker network, with the tunnel container as the only component attached to more than one network — so applications cannot reach one another directly, only through their public route. This mirrors the isolation Docker Compose already provides between the dashboard and its own dependencies, extended across applications rather than within one.
 
-\section{Deuxième application hébergée}
-% TODO : présentation de l'application, particularités de son
-% déploiement.
-[À rédiger.]
-
-\section{Troisième application hébergée}
-% TODO : cas différent du premier (ex. état persistant / base de
-% données), ce que cela a changé dans l'approche.
-[À rédiger.]
+\section{Status at the time of writing}
+% TODO: update once a second application is actually deployed.
+Only the supervision dashboard itself is deployed in production at the time of writing; it has effectively served as the platform's reference application throughout the internship, and every mechanism described in this report (containerisation, HTTPS, authentication, CI/CD, backups, supervision) was built and validated against it. Deploying a second application, to exercise the multi-application mechanism above with a real second workload rather than only in principle, is the next planned step once the domain name described above is acquired.
 
 \clearpage

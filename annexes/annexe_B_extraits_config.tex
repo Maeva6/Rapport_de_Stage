@@ -1,22 +1,40 @@
-\chapter{Extraits de configuration}
+\chapter{Configuration excerpts}
 \label{annexe:config}
 
-% TODO : coller ici les extraits de configuration les plus
-% représentatifs (docker-compose.yml, Jenkinsfile, règles UFW...),
-% en gardant les valeurs sensibles hors du rapport (tokens, mots
-% de passe).
+Sensitive values (tokens, passwords) are kept out of this report; every excerpt below is copied as-is from the working configuration, with only such values removed.
 
-\section{docker-compose.yml (extrait)}
-\begin{lstlisting}[language=bash]
-% TODO : coller un extrait pertinent (ex. labels Traefik)
+\section{docker-compose.yml (Cloudflare Tunnel service)}
+\begin{lstlisting}
+cloudflared:
+  image: cloudflare/cloudflared:latest
+  container_name: devops-cloudflared
+  restart: unless-stopped
+  # --protocol http2: the default protocol (QUIC/UDP) drops
+  # frequently on a satellite link (Starlink), whose NAT closes
+  # idle UDP sessions -- HTTP/2 (TCP) is more stable here.
+  command: tunnel --no-autoupdate --protocol http2 --url http://control-center:3000
+  depends_on:
+    - control-center
+  networks:
+    - devops-net
 \end{lstlisting}
 
-\section{Jenkinsfile (extrait)}
-\begin{lstlisting}[language=bash]
-% TODO : coller un extrait pertinent (ex. étape Test)
+\section{Jenkinsfile (Test stage)}
+\begin{lstlisting}
+stage('Test') {
+  steps {
+    sh 'docker run --rm -v "$WORKSPACE":/app -w /app node:20-alpine sh -c "npm ci && npm test"'
+  }
+}
 \end{lstlisting}
 
-\section{Règles UFW}
-\begin{lstlisting}[language=bash]
-% TODO : coller les règles UFW appliquées
+\section{UFW rules (excerpt, after hardening)}
+\begin{lstlisting}
+[ 1] 22/tcp                     LIMIT IN    Anywhere              # SSH anti brute-force
+[ 2] 80/tcp                     ALLOW IN    Anywhere              # HTTP
+[ 3] 443/tcp                    ALLOW IN    Anywhere              # HTTPS
+[ 4] 3000/tcp                   ALLOW IN    192.168.1.0/24        # Dashboard - LAN only
+[ 5] 8000/tcp                   ALLOW IN    192.168.1.0/24        # Traefik dashboard - LAN only
+[ 6] 8080/tcp                   ALLOW IN    192.168.1.0/24        # Traefik dashboard - LAN only
+[ 7] 8081/tcp                   ALLOW IN    192.168.1.0/24        # Jenkins - LAN only
 \end{lstlisting}

@@ -1,38 +1,39 @@
-\chapter{Analyse du besoin}
+\chapter{Requirements analysis}
 \label{chap:besoin}
 
-\section{Objectifs de la mission}
-% TODO : reformuler le thème du stage en objectifs concrets —
-% sécuriser l'accès au serveur, industrialiser le déploiement,
-% héberger plusieurs applications web de façon isolée et supervisée.
-[À rédiger.]
+\section{Objectives of the assignment}
+The theme of the internship translates into four concrete objectives: (1) secure access to the server and its transport layer before any exposure; (2) industrialise the deployment process so that a code change reaches production reliably and quickly; (3) host several independent web applications on the same infrastructure without them interfering with one another; (4) supervise the whole platform so that its state (resource usage, running applications, security events) is visible at a glance rather than discovered after the fact.
 
-\section{Contraintes}
-% TODO : contraintes techniques (matériel disponible, réseau local,
-% budget nul/quasi nul -> outils open-source et gratuits), contraintes
-% de temps (16 semaines), contraintes de sécurité.
-[À rédiger.]
+\section{Constraints}
+Three constraints shaped almost every technical decision made during the internship:
+\begin{itemize}
+  \item \textbf{Budget}: effectively zero for software — every tool used had to be free or open-source, which is why the stack leans heavily on self-hosted and free-tier services (Let's Encrypt, Cloudflare's free plan, DuckDNS) rather than paid alternatives.
+  \item \textbf{Network}: the server's Internet connection turned out to be a shared Starlink link behind Carrier-Grade NAT (CGNAT) on IPv4, with no public IPv4 address and no port forwarding available — a constraint discovered only once the classic reverse-proxy approach (Traefik with a directly exposed port) had already been implemented, forcing a redesign (see chapter~\ref{chap:securisation}).
+  \item \textbf{Time}: 16 weeks, which required prioritising security hardening and a first working application early, and treating multi-application hosting and advanced supervision as later, incremental additions rather than a big-bang delivery.
+\end{itemize}
 
-\section{Choix technologiques}
-% TODO : justifier les choix (Docker/Docker Compose, Traefik, Jenkins,
-% Node.js/Express, etc.) — un tableau récapitulatif est utile ici.
+\section{Technology choices}
+The table below summarises the main technical choices and the need each one addresses; each is justified in more detail in the corresponding section of Part 3.
+
 \begin{table}[h]
   \centering
   \begin{tabularx}{\textwidth}{@{}lX@{}}
     \toprule
-    \textbf{Besoin} & \textbf{Solution retenue} \\
+    \textbf{Need} & \textbf{Solution chosen} \\
     \midrule
     Virtualisation & Proxmox VE \\
-    Isolation des applications & Docker / Docker Compose \\
-    Reverse proxy \& HTTPS & Traefik + Let's Encrypt \\
-    Nom de domaine dynamique & DuckDNS \\
-    Intégration / déploiement continu & Jenkins \\
-    Pare-feu & UFW \\
-    Protection brute-force SSH & Fail2ban \\
-    Alerting & Webhooks Discord \\
+    Application isolation & Docker / Docker Compose \\
+    Reverse proxy \& HTTPS & Traefik + Let's Encrypt (direct-IP path), Cloudflare Tunnel (CGNAT path) \\
+    Dynamic DNS / domain & DuckDNS, Cloudflare DNS \\
+    Continuous integration/deployment & Jenkins \\
+    Firewall & UFW \\
+    SSH brute-force protection & Fail2ban, key-only authentication \\
+    Application-level authentication & HTTP Basic Auth with a custom anti-brute-force lockout \\
+    Alerting & Discord webhooks \\
+    Automated testing & Node.js built-in test runner (\texttt{node --test}) \\
     \bottomrule
   \end{tabularx}
-  \caption{Correspondance besoin / solution technique}
+  \caption{Mapping from requirement to technical solution}
 \end{table}
 
 \clearpage

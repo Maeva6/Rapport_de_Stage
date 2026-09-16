@@ -1,25 +1,20 @@
-\chapter{Bilan}
+\chapter{Outcomes}
 \label{chap:bilan}
-% Correspond à la phase 04 de la feuille de route.
+% Corresponds to phase 04 of the roadmap.
 
-\section{Audit de sécurité final}
-% TODO : résultat de l'audit global (ports exposés, images Docker,
-% secrets), actions correctives menées.
-[À rédiger.]
+\section{Security review}
+A comprehensive, formal security audit (dependency and image scanning, secret rotation policy) is planned for the final phase of the roadmap and had not yet been carried out at the time of writing. What did happen along the way, however, is a series of targeted reviews that already behaved like a lightweight audit and caught two real gaps: an inspection of the live firewall rules revealed that the LAN-only restriction planned for the dashboard and administrative ports had, in fact, never been applied, and that same inspection surfaced an IPv6 exposure that the original CGNAT-based security reasoning had not accounted for (see chapter~\ref{chap:securisation}). Both were corrected once identified. This is itself a useful, if informal, finding for the final audit: state what a firewall or configuration is \emph{supposed} to enforce should always be checked against what it \emph{actually} enforces, rather than assumed from the deployment steps followed.
 
-\section{Résultats obtenus}
-% TODO : synthèse de ce qui a été livré, en s'appuyant sur la feuille
-% de route (statuts Acquis/En cours/Prévu au moment de la rédaction).
-[À rédiger.]
+\section{Results achieved}
+% TODO: keep this section aligned with the roadmap as later phases complete.
+By the end of the internship's first roadmap phase, the server-hardening objectives were met in full: application-level authentication with anti-brute-force protection, HTTPS (adapted to the network's CGNAT constraint via Cloudflare Tunnel rather than the originally planned direct Traefik/Let's Encrypt path), a firewall correctly scoped to the local network, and SSH access restricted to key-based authentication with root login disabled. The second phase — continuous integration, automated testing, and verified backups — was also completed: a Jenkins pipeline blocks deployment on test failure, and backups are checked against an actual restore test rather than assumed to be valid. Supervision (SSH activity, container state, the physical Proxmox host, proactive Discord alerts) is in production and was the tool used to validate most of the above in practice. Hosting a second application and finalising a stable public address (via a purchased domain name and a Cloudflare Named Tunnel) remain open at the time of writing.
 
-\section{Difficultés et compétences acquises}
-% TODO : difficultés transverses (techniques et humaines), compétences
-% techniques et méthodologiques développées durant le stage.
-[À rédiger.]
+\section{Difficulties and skills gained}
+Most of the difficulties encountered during the internship were not solved by knowing the right command in advance, but by a disciplined process of isolating a failure to its actual cause rather than the most visible symptom. A representative example: after fixing the dashboard's login credentials, authentication kept failing even with the correct password. Comparing a request made directly against the VM (bypassing the reverse proxy) with one made through the public URL isolated the problem to the application itself rather than the network path; inspecting the environment variables actually loaded inside the running container (rather than the \texttt{.env} file on disk) revealed the real cause: \texttt{docker compose restart} restarts a container without rereading its environment file, so a credential change only takes effect after \texttt{docker compose up -d --force-recreate}. This same method — narrow the failure down with a controlled comparison, verify the \emph{running} state rather than the \emph{configured} state, read logs before guessing — reappears throughout chapters~\ref{chap:securisation} and~\ref{chap:cicd}, and is arguably the most transferable skill the internship developed, ahead of any specific tool.
 
-\section{Limites et perspectives}
-% TODO : ce qui n'a pas pu être fait dans le temps imparti, pistes
-% d'amélioration si le projet devait continuer.
-[À rédiger.]
+On the tool side, the internship provided hands-on, production-adjacent experience with virtualisation (Proxmox), containerisation (Docker Compose), reverse proxying and tunnelling, CI/CD (Jenkins), and Linux system hardening (UFW, SSH, Fail2ban) — most of it learned by first getting something to fail in a realistic way and then fixing it, rather than by following a guide written for an idealised environment.
+
+\section{Limitations and outlook}
+The most significant limitation at the time of writing is the public address of the dashboard: Cloudflare Tunnel's free "Quick Tunnel" mode works reliably but has no stable URL, since a new one is generated on every restart — and the shared Starlink connection resets often enough that this matters in practice, not just in theory. A short technical note evaluating the cost, security, and reliability trade-offs of purchasing a proper domain name (and the mechanism by which a single domain would cover every future application through free subdomains, rather than requiring a new purchase each time) was written and submitted to the supervisors for a budget decision; adopting it and moving to a Cloudflare Named Tunnel is the natural next step, not a hypothetical one. Beyond that, hosting a genuine second application — rather than only the dashboard that doubled as the platform's own test subject throughout the internship — is what would most convincingly demonstrate the "multiple web applications" half of the assignment's theme.
 
 \clearpage

@@ -1,10 +1,8 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-% TODO : reprendre les objectifs de l'introduction, montrer en quoi
-% ils ont été atteints, terminer sur un apport personnel (ce que ce
-% stage a changé dans le projet professionnel du/de la stagiaire).
+This internship set out to turn an idle physical server into a secure, durable web hosting platform, capable of hosting several applications at once. At the time of writing, the security and reliability foundations described in this report — authentication, HTTPS adapted to a genuinely constrained network, a correctly scoped firewall, hardened SSH access, continuous integration with tested and verified deployments, and full-stack supervision — are in place and validated in production against a real application, not only planned on paper. What remains is less about acquiring new skills than about applying the same ones a second and third time: hosting an additional application, and finalising a stable public address once a domain name is acquired.
 
-[À rédiger.]
+Beyond the technical deliverable, this internship was also a first sustained exposure to how infrastructure work actually unfolds: initial plans (a directly exposed reverse proxy, for instance) meeting a constraint discovered only in practice (CGNAT) and having to be reworked without losing the security guarantees already built, rather than a specification followed from a clean, known-in-advance starting point. Diagnosing failures methodically, distinguishing a configured state from an actually running one, and documenting decisions as they were made rather than after the fact are the habits I expect to carry furthest beyond this specific project.
 
 \clearpage

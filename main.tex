@@ -1,32 +1,31 @@
 % ============================================================
-%  Rapport de stage — Mise en place, configuration, déploiement
-%  d'un serveur web sécurisé et hébergement de plusieurs
-%  applications web
+%  Internship report — Setting up, configuring and deploying
+%  a secure web server and hosting multiple web applications
 %
-%  Compilation : pdflatex main.tex (x2 pour la table des matières)
-%  Chaque partie est dans chapters/ — modifiable indépendamment
-%  au fur et à mesure de l'avancement du stage.
+%  Compile: pdflatex main.tex (x2 for the table of contents)
+%  Each part lives in chapters/ — editable independently as the
+%  internship progresses.
 % ============================================================
 \documentclass[a4paper,12pt,oneside]{report}
 
-% ---------- Langue & encodage ----------
-\usepackage[french]{babel}
+% ---------- Language & encoding ----------
+\usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 
-% ---------- Mise en page ----------
+% ---------- Page layout ----------
 \usepackage[margin=2.5cm,headheight=14pt]{geometry}
 \usepackage{setspace}
 \onehalfspacing
 
-% ---------- Titres ----------
+% ---------- Chapter titles ----------
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
   {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
 \titlespacing*{\chapter}{0pt}{0pt}{28pt}
 
-% ---------- En-têtes / pieds de page ----------
+% ---------- Headers / footers ----------
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
@@ -34,7 +33,7 @@
 \fancyhead[R]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
-% ---------- Couleurs & liens ----------
+% ---------- Colors & links ----------
 \usepackage{xcolor}
 \definecolor{accent}{HTML}{16283D}
 \usepackage[
@@ -45,7 +44,7 @@
   bookmarksopen=true
 ]{hyperref}
 
-% ---------- Images, tableaux, code ----------
+% ---------- Images, tables, code ----------
 \usepackage{graphicx}
 \graphicspath{{images/}}
 \usepackage{booktabs}
@@ -53,7 +52,7 @@
 \usepackage{caption}
 \usepackage{listings}
 
-% Style pour extraits de config/commandes (docker-compose.yml, Jenkinsfile, bash...)
+% Style for config/command excerpts (docker-compose.yml, Jenkinsfile, bash...)
 \lstdefinestyle{devops}{
   basicstyle=\ttfamily\small,
   backgroundcolor=\color{black!4},
@@ -69,23 +68,23 @@
 }
 \lstset{style=devops}
 
-% ---------- Annexes ----------
+% ---------- Appendices ----------
 \usepackage[toc,page]{appendix}
 
 \begin{document}
 
 % ============================================================
-%  PAGE DE GARDE
+%  TITLE PAGE
 % ============================================================
 \input{chapters/00_page_de_garde}
 
 % ============================================================
-%  REMERCIEMENTS
+%  ACKNOWLEDGEMENTS
 % ============================================================
 \input{chapters/01_remerciements}
 
 % ============================================================
-%  SOMMAIRE
+%  TABLE OF CONTENTS
 % ============================================================
 \pagenumbering{roman}
 \tableofcontents
@@ -99,17 +98,17 @@
 \input{chapters/02_introduction}
 
 % ============================================================
-%  PARTIE 1 — CONTEXTE
+%  PART 1 — CONTEXT
 % ============================================================
 \input{chapters/03_contexte}
 
 % ============================================================
-%  PARTIE 2 — BESOIN & CAHIER DES CHARGES
+%  PART 2 — REQUIREMENTS & SPECIFICATIONS
 % ============================================================
 \input{chapters/04_besoin}
 
 % ============================================================
-%  PARTIE 3 — MISE EN ŒUVRE TECHNIQUE
+%  PART 3 — TECHNICAL IMPLEMENTATION
 % ============================================================
 \input{chapters/05_infrastructure}
 \input{chapters/06_securisation}
@@ -118,7 +117,7 @@
 \input{chapters/09_supervision}
 
 % ============================================================
-%  PARTIE 4 — BILAN
+%  PART 4 — OUTCOMES
 % ============================================================
 \input{chapters/10_bilan}
 
@@ -128,7 +127,7 @@
 \input{chapters/11_conclusion}
 
 % ============================================================
-%  ANNEXES
+%  APPENDICES
 % ============================================================
 \begin{appendices}
   \input{annexes/annexe_A_architecture}

@@ -1,25 +1,17 @@
-\chapter{Supervision et alerting}
+\chapter{Supervision and alerting}
 \label{chap:supervision}
-% Correspond à la phase 03 de la feuille de route.
+% Corresponds to phase 03 of the roadmap.
 
-\section{Le tableau de bord DevOps Control Center}
-% TODO : présentation générale de l'outil développé (vues, thème
-% clair/sombre, FR/EN), captures d'écran en annexe si utile.
-[À rédiger.]
+\section{The DevOps Control Center dashboard}
+The application used throughout this internship to validate every mechanism described so far is itself a purpose-built supervision tool, developed from scratch as part of the internship: a Node.js/Express backend with a dependency-free vanilla JavaScript frontend (no build step), organised around seven views — overview, applications, pipelines, resources, security, server, and settings — with light/dark themes and a French/English interface. Its visual design was deliberately revisited midway through the internship, moving from a generic look to a dedicated design system (dense information layout, a consistent colour vocabulary for status, monospaced figures for machine-readable values) more appropriate for an operations tool that is scanned rather than read.
 
-\section{Surveillance SSH}
-% TODO : parsing de auth.log, classification des tentatives
-% (acceptées / échouées / utilisateur invalide), géolocalisation IP.
-[À rédiger.]
+\section{SSH monitoring}
+A background task tails the VM's \texttt{auth.log} continuously and classifies every connection attempt (accepted, failed, invalid user), enriching each one with an approximate geolocation of the source IP obtained from a free public API and cached locally so the same address is never looked up twice. This feed is what chapter~\ref{chap:securisation}'s brute-force and SSH-hardening work was validated against in practice.
 
-\section{Supervision de l'hôte physique Proxmox}
-% TODO : VM/LXC surveillés, ressources allouées, santé des disques.
-[À rédiger.]
+\section{Supervision of the physical host (Proxmox)}
+Beyond the guest VM, the dashboard also queries the Proxmox hypervisor itself through a read-only API token, surfacing the state and allocated resources of every virtual machine or container it hosts, along with basic disk health — giving a single place to check both the application layer and the physical layer it runs on.
 
-\section{Alertes proactives}
-% TODO : webhooks Discord, événements déclencheurs (conteneur
-% arrêté, tentatives SSH suspectes), pourquoi ce choix plutôt qu'un
-% e-mail (gratuit, sans configuration SMTP).
-[À rédiger.]
+\section{Proactive alerts}
+Rather than requiring someone to have the dashboard open to notice a problem, two background watchers push alerts to a Discord channel through a webhook: one on container state transitions (a container that stops unexpectedly), and one on suspicious SSH activity. Discord webhooks were chosen over email specifically because they require no SMTP configuration and no account beyond a channel to alert into, which matched the internship's zero-budget constraint. Both watchers deliberately stay silent on their very first scan after startup, so that pre-existing history (a log already containing old entries, containers already running) is never mistaken for a fresh event.
 
 \clearpage
