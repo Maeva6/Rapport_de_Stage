@@ -7,8 +7,8 @@ The theme of the internship translates into four concrete objectives: (1) secure
 \section{Constraints}
 Three constraints shaped almost every technical decision made during the internship:
 \begin{itemize}
-  \item \textbf{Budget}: effectively zero for software — every tool used had to be free or open-source, which is why the stack leans heavily on self-hosted and free-tier services (Let's Encrypt, Cloudflare's free plan, DuckDNS) rather than paid alternatives.
-  \item \textbf{Network}: the server's Internet connection turned out to be a shared Starlink link behind Carrier-Grade NAT (CGNAT) on IPv4, with no public IPv4 address and no port forwarding available — a constraint discovered only once the classic reverse-proxy approach (Traefik with a directly exposed port) had already been implemented, forcing a redesign (see chapter~\ref{chap:securisation}).
+  \item \textbf{Budget}: effectively zero for software -- every tool used had to be free or open-source, which is why the stack leans heavily on self-hosted and free-tier services (Let's Encrypt, Cloudflare's free plan, DuckDNS) rather than paid alternatives.
+  \item \textbf{Network}: the server's Internet connection turned out to be a shared Starlink link behind Carrier-Grade NAT (CGNAT) on IPv4, with no public IPv4 address and no port forwarding available -- a constraint discovered only once the classic reverse-proxy approach (Traefik with a directly exposed port) had already been implemented, forcing a redesign (see chapter~\ref{chap:securisation}).
   \item \textbf{Time}: 16 weeks, which required prioritising security hardening and a first working application early, and treating multi-application hosting and advanced supervision as later, incremental additions rather than a big-bang delivery.
 \end{itemize}
 
@@ -17,21 +17,31 @@ The table below summarises the main technical choices and the need each one addr
 
 \begin{table}[h]
   \centering
-  \begin{tabularx}{\textwidth}{@{}lX@{}}
-    \toprule
-    \textbf{Need} & \textbf{Solution chosen} \\
-    \midrule
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|>{\bfseries}l|X|}
+    \hline
+    \rowcolor{ucacred!15} \textbf{Need} & \textbf{Solution chosen} \\
+    \hline
     Virtualisation & Proxmox VE \\
+    \hline
     Application isolation & Docker / Docker Compose \\
+    \hline
     Reverse proxy \& HTTPS & Traefik + Let's Encrypt (direct-IP path), Cloudflare Tunnel (CGNAT path) \\
+    \hline
     Dynamic DNS / domain & DuckDNS, Cloudflare DNS \\
+    \hline
     Continuous integration/deployment & Jenkins \\
+    \hline
     Firewall & UFW \\
+    \hline
     SSH brute-force protection & Fail2ban, key-only authentication \\
+    \hline
     Application-level authentication & HTTP Basic Auth with a custom anti-brute-force lockout \\
+    \hline
     Alerting & Discord webhooks \\
+    \hline
     Automated testing & Node.js built-in test runner (\texttt{node --test}) \\
-    \bottomrule
+    \hline
   \end{tabularx}
   \caption{Mapping from requirement to technical solution}
 \end{table}

@@ -6,7 +6,7 @@
 The platform hosts each application as its own Docker container, exposed under its own subdomain (for example \texttt{dashboard.example.org}, \texttt{app2.example.org}), all routed through the same tunnel described in chapter~\ref{chap:securisation}. The key property this gives the platform is that adding a new application never requires buying a new domain: once the root domain is registered and its DNS delegated to Cloudflare, an unlimited number of subdomains can be created at no extra cost, each pointing to a different application. This mechanism, and the cost analysis behind acquiring a first domain for the project, was written up separately for the supervisors (see the standalone technical note referenced in the deployment guide) and is only summarised here.
 
 \section{Network isolation between applications}
-Each application is planned to run on its own Docker network, with the tunnel container as the only component attached to more than one network — so applications cannot reach one another directly, only through their public route. This mirrors the isolation Docker Compose already provides between the dashboard and its own dependencies, extended across applications rather than within one.
+Each application is planned to run on its own Docker network, with the tunnel container as the only component attached to more than one network -- so applications cannot reach one another directly, only through their public route. This mirrors the isolation Docker Compose already provides between the dashboard and its own dependencies, extended across applications rather than within one.
 
 \section{Status at the time of writing}
 % TODO: update once a second application is actually deployed.

@@ -9,15 +9,19 @@ Progress was tracked against a living roadmap covering the sixteen weeks of the 
 
 \begin{table}[h]
   \centering
-  \begin{tabularx}{\textwidth}{@{}llX@{}}
-    \toprule
-    \textbf{Phase} & \textbf{Period} & \textbf{Status} \\
-    \midrule
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabularx}{\textwidth}{|p{4.2cm}|p{3.4cm}|X|}
+    \hline
+    \rowcolor{ucacred!15} \textbf{Phase} & \textbf{Period} & \textbf{Status} \\
+    \hline
     1. Foundation \& server hardening & 10 Sep -- 10 Oct 2026 & Done -- authentication, HTTPS, firewall, SSH hardening \\
+    \hline
     2. Quality, CI/CD \& 2nd application & 10 Oct -- 10 Nov 2026 & Partly done -- Jenkins, tests and verified backups done; second application pending \\
+    \hline
     3. Supervision \& 3rd application & 10 Nov -- 10 Dec 2026 & Partly done -- alerting and Proxmox supervision done; third application pending \\
+    \hline
     4. Audit, industrialisation \& handover & 10 Dec 2026 -- 10 Jan 2027 & Planned \\
-    \bottomrule
+    \hline
   \end{tabularx}
   \caption{Roadmap phases and status at the time of writing}
   \label{tab:roadmap}

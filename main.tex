@@ -1,9 +1,9 @@
 % ============================================================
-%  Internship report — Setting up, configuring and deploying
+%  Internship report -- Setting up, configuring and deploying
 %  a secure web server and hosting multiple web applications
 %
 %  Compile: pdflatex main.tex (x2 for the table of contents)
-%  Each part lives in chapters/ — editable independently as the
+%  Each part lives in chapters/ -- editable independently as the
 %  internship progresses.
 % ============================================================
 \documentclass[a4paper,12pt,oneside]{report}
@@ -27,8 +27,12 @@
 % ---------- Chapter titles ----------
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
-  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
+  {\normalfont\huge\bfseries\color{ucacred}}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
 \titlespacing*{\chapter}{0pt}{0pt}{28pt}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{ucacred}}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{ucacred}}{\thesubsection}{1em}{}
 
 % ---------- Headers / footers ----------
 \usepackage{fancyhdr}
@@ -39,8 +43,9 @@
 \renewcommand{\headrulewidth}{0.4pt}
 
 % ---------- Colors & links ----------
-\usepackage{xcolor}
-\definecolor{accent}{HTML}{16283D}
+\usepackage[table]{xcolor}
+\definecolor{ucacred}{HTML}{990000}
+\definecolor{accent}{HTML}{990000}
 \usepackage[
   colorlinks=true,
   linkcolor=accent,
@@ -54,6 +59,7 @@
 \graphicspath{{images/}}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{multirow}
 \usepackage{caption}
 \usepackage{listings}
 
@@ -79,6 +85,8 @@
 % ---------- Title page design ----------
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
+\usepackage{tikz}
+\usepackage{eso-pic} % cover page border
 
 \begin{document}
 
@@ -107,12 +115,12 @@
 \input{chapters/02_introduction}
 
 % ============================================================
-%  PART 1 — CONTEXT
+%  PART 1 -- CONTEXT
 % ============================================================
 \input{chapters/03_contexte}
 
 % ============================================================
-%  PART 2 — REQUIREMENTS & SPECIFICATIONS
+%  PART 2 -- REQUIREMENTS & SPECIFICATIONS
 % ============================================================
 \input{chapters/04_besoin}
 
@@ -122,7 +130,7 @@
 \input{chapters/05_gestion_projet}
 
 % ============================================================
-%  PART 3 — TECHNICAL IMPLEMENTATION
+%  PART 3 -- TECHNICAL IMPLEMENTATION
 % ============================================================
 \input{chapters/06_infrastructure}
 \input{chapters/07_securisation}
@@ -131,7 +139,7 @@
 \input{chapters/10_supervision}
 
 % ============================================================
-%  PART 4 — OUTCOMES
+%  PART 4 -- OUTCOMES
 % ============================================================
 \input{chapters/11_bilan}
 

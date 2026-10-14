@@ -1,60 +1,109 @@
 % ---------- Title page ----------
-% TODO: fill in the fields between [ ] (institution name, logos...)
-% then remove this comment.
+% Requires the logo file "logo ucac.png" in images/ (same file as the
+% activity report). If it is missing, the logo is simply skipped.
 \begin{titlepage}
-  \centering
+\thispagestyle{empty}
+\centering
 
-  % ---------- Top colour band: institution ----------
-  \noindent
-  \begin{tcolorbox}[
-    enhanced, colback=accent, colframe=accent, coltext=white,
-    boxrule=0pt, arc=0pt, outer arc=0pt,
-    left=0pt, right=0pt, top=10pt, bottom=10pt,
-    width=\textwidth, halign=center
-  ]
-  {\small\bfseries\MakeUppercase{[Institution name]} \quad\textbar\quad [Programme / Year]}
-  \end{tcolorbox}
+% ---- Double border around the cover page ----
+\AddToShipoutPictureBG*{\AtPageLowerLeft{%
+  \begin{tikzpicture}[overlay]
+    \draw[ucacred, line width=2.5pt]
+      (1.3cm,1.3cm) rectangle (\paperwidth-1.3cm,\paperheight-1.3cm);
+    \draw[ucacred, line width=0.6pt]
+      (1.7cm,1.7cm) rectangle (\paperwidth-1.7cm,\paperheight-1.7cm);
+  \end{tikzpicture}}}
 
-  \vspace{2.2cm}
-  % \includegraphics[width=3.5cm]{logo_school.png}\hfill
-  % \includegraphics[width=3.5cm]{logo_host.png}
+\vspace*{0.3cm}
 
-  {\large\scshape Internship Report\par}
-  \vspace{0.6cm}
-  {\Huge\bfseries Secure Web Server \& Multi-Application Hosting\par}
-  \vspace{0.5cm}
-  {\color{accent}\rule{0.35\textwidth}{1.4pt}\par}
-  \vspace{0.6cm}
-  {\large\itshape Setting up, configuring and deploying a secure web server,\\
-  and hosting multiple web applications on it\par}
+% ---- Official bilingual header ----
+\begin{minipage}[t]{0.44\textwidth}
+\centering\scriptsize\bfseries
+RÉPUBLIQUE DU CAMEROUN\\
+Paix - Travail - Patrie\\
+*********\\
+MINISTÈRE DE L'ENSEIGNEMENT SUPÉRIEUR\\
+*********\\
+UNIVERSITÉ CATHOLIQUE D'AFRIQUE CENTRALE\\
+*********\\
+INSTITUT UCAC-ICAM, CAMPUS DE DOUALA
+\end{minipage}\hfill
+\begin{minipage}[t]{0.40\textwidth}
+\centering\scriptsize\bfseries
+REPUBLIC OF CAMEROON\\
+Peace - Work - Fatherland\\
+*********\\
+MINISTRY OF HIGHER EDUCATION\\
+*********\\
+CATHOLIC UNIVERSITY OF CENTRAL AFRICA\\
+*********\\
+UCAC-ICAM INSTITUTE, DOUALA CAMPUS
+\end{minipage}
 
-  \vspace{1.6cm}
-  \begin{minipage}{0.82\textwidth}
-    \small\centering
-    A physical server turned into an operational hosting platform: HTTPS
-    exposure adapted to a real network constraint (CGNAT), authenticated
-    and rate-limited access, a hardened firewall and SSH configuration,
-    a Jenkins pipeline that blocks on failing tests, verified backups,
-    and full-stack supervision with proactive alerting.
-  \end{minipage}
+\vspace{0.6cm}
+\IfFileExists{images/logo ucac.png}{\includegraphics[height=2cm]{logo ucac.png}}{}
 
-  \vspace{1.8cm}
-  \begin{tcolorbox}[
-    enhanced, colback=white, colframe=accent!60,
-    boxrule=0.6pt, arc=2pt,
-    left=16pt, right=16pt, top=10pt, bottom=10pt,
-    width=0.82\textwidth
-  ]
-  \begin{tabularx}{\linewidth}{@{}lX@{}}
-    \textbf{Intern} & Maeva \\[2pt]
-    \textbf{Host organisation} & Ucac-Icam \\[2pt]
-    \textbf{Industry supervisors} & Fr. Maximilien Bossou, Mr. Christian Aboudi \\[2pt]
-    \textbf{Period} & 10 September 2026 -- 10 January 2027 \\
-  \end{tabularx}
-  \end{tcolorbox}
+\vspace{0.6cm}
 
-  \vfill
-  {\color{accent}\rule{\textwidth}{0.6pt}\par}
-  \vspace{6pt}
-  {\small [City], [defence date]\par}
+% ---- Title banner ----
+\noindent\colorbox{ucacred}{\parbox{\dimexpr\textwidth-2\fboxsep}{%
+  \centering\vspace{5mm}%
+  {\color{white}\fontsize{26}{32}\selectfont\bfseries INTERNSHIP REPORT\par}%
+  \vspace{5mm}}}
+
+\vspace{0.6cm}
+
+% ---- Internship theme ----
+{\color{ucacred}\rule{0.8\textwidth}{1.2pt}\par}
+\vspace{0.3cm}
+{\bfseries\fontsize{18}{24}\selectfont Setting up, configuring and deploying\\
+a secure web server, and hosting\\
+multiple web applications\par}
+\vspace{0.3cm}
+{\color{ucacred}\rule{0.8\textwidth}{1.2pt}\par}
+
+\vspace{0.4cm}
+{\large Academic internship from 31 August 2026 to 15 January 2027\par}
+
+\vspace{0.8cm}
+\begin{minipage}{0.82\textwidth}
+  \small\centering
+  A physical server turned into an operational hosting platform: HTTPS
+  exposure adapted to a real network constraint (CGNAT), authenticated
+  and rate-limited access, a hardened firewall and SSH configuration,
+  a Jenkins pipeline that blocks on failing tests, verified backups,
+  and full-stack supervision with proactive alerting.
+\end{minipage}
+
+\vfill
+
+% ---- Author ----
+{\color{ucacred}\bfseries\small PRESENTED BY\par}
+\vspace{0.2cm}
+{\large\bfseries Maeva MAWAMBA TOWA X2028\par}
+
+\vfill
+
+% ---- Supervision ----
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+{\color{ucacred}\bfseries\small INSTITUTE SUPERVISOR\par}
+\vspace{0.15cm}
+Mr. Humphrey Mbeng NKONGHO OJONG
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+{\color{ucacred}\bfseries\small INDUSTRY SUPERVISORS\par}
+\vspace{0.15cm}
+Fr. Maximilien Bossou\\
+Mr. Christian Aboudi
+\end{minipage}
+
+\vfill
+
+{\color{ucacred}\rule{0.9\textwidth}{0.5pt}\par}
+\vspace{0.3cm}
+{\large\bfseries Academic year 2026--2027\par}
+\vspace{0.6cm}
 \end{titlepage}
