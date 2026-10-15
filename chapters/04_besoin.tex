@@ -9,7 +9,7 @@ Three constraints shaped almost every technical decision made during the interns
 \begin{itemize}
   \item \textbf{Budget}: effectively zero for software -- every tool used had to be free or open-source, which is why the stack leans heavily on self-hosted and free-tier services (Let's Encrypt, Cloudflare's free plan, DuckDNS) rather than paid alternatives.
   \item \textbf{Network}: the server's Internet connection turned out to be a shared Starlink link behind Carrier-Grade NAT (CGNAT) on IPv4, with no public IPv4 address and no port forwarding available -- a constraint discovered only once the classic reverse-proxy approach (Traefik with a directly exposed port) had already been implemented, forcing a redesign (see chapter~\ref{chap:securisation}).
-  \item \textbf{Time}: 16 weeks, which required prioritising security hardening and a first working application early, and treating multi-application hosting and advanced supervision as later, incremental additions rather than a big-bang delivery.
+  \item \textbf{Time}: about 19 weeks (31 August 2026 to 15 January 2027), which required prioritising security hardening and a first working application early, and treating multi-application hosting and advanced supervision as later, incremental additions rather than a big-bang delivery.
 \end{itemize}
 
 \section{Technology choices}

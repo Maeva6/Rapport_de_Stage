@@ -5,7 +5,7 @@
 The project was run iteratively rather than against a specification fixed at the outset: the theme set the destination, but the order and the exact scope of each step were adjusted as earlier steps were completed and, at times, as they revealed constraints that were not visible in advance (the network's CGNAT limitation described in chapter~\ref{chap:securisation} is the clearest example). Work was organised into four successive phases, each with a fixed time box and a small number of concrete objectives, rather than a single long list of tasks tackled in no particular order. Within a phase, security-sensitive changes always followed the same discipline: apply the smallest safe step, verify it independently of the change itself (a second terminal, an external request, an effective-configuration dump) before moving on, and only then proceed to the next step -- most visibly for SSH hardening (chapter~\ref{chap:securisation}), where the order of operations (confirm key-based login, only then disable password authentication) is precisely what avoiding a lockout depends on.
 
 \section{Planning and tracking}
-Progress was tracked against a living roadmap covering the sixteen weeks of the internship, broken down into four phases of four weeks each. Every task on it carries one of three states -- \emph{done}, \emph{in progress}, or \emph{planned} -- updated as work actually happened rather than as originally scheduled, so the roadmap reflects the real state of the project at any point rather than the initial plan. Table~\ref{tab:roadmap} summarises the four phases as of the time of writing.
+Progress was tracked against a living roadmap covering the whole internship (31 August 2026 to 15 January 2027), broken down into four successive phases. Every task on it carries one of three states -- \emph{done}, \emph{in progress}, or \emph{planned} -- updated as work actually happened rather than as originally scheduled, so the roadmap reflects the real state of the project at any point rather than the initial plan. Table~\ref{tab:roadmap} summarises the four phases as of the time of writing.
 
 \begin{table}[h]
   \centering
@@ -14,13 +14,13 @@ Progress was tracked against a living roadmap covering the sixteen weeks of the 
     \hline
     \rowcolor{ucacred!15} \textbf{Phase} & \textbf{Period} & \textbf{Status} \\
     \hline
-    1. Foundation \& server hardening & 10 Sep -- 10 Oct 2026 & Done -- authentication, HTTPS, firewall, SSH hardening \\
+    1. Foundation \& server hardening & 31 Aug -- 30 Sep 2026 & Done -- authentication, HTTPS, firewall, SSH hardening \\
     \hline
-    2. Quality, CI/CD \& 2nd application & 10 Oct -- 10 Nov 2026 & Partly done -- Jenkins, tests and verified backups done; second application pending \\
+    2. Quality, CI/CD \& 2nd application & 1 Oct -- 31 Oct 2026 & Partly done -- Jenkins, tests and verified backups done; second application pending \\
     \hline
-    3. Supervision \& 3rd application & 10 Nov -- 10 Dec 2026 & Partly done -- alerting and Proxmox supervision done; third application pending \\
+    3. Supervision \& 3rd application & 1 Nov -- 30 Nov 2026 & Partly done -- alerting and Proxmox supervision done; third application pending \\
     \hline
-    4. Audit, industrialisation \& handover & 10 Dec 2026 -- 10 Jan 2027 & Planned \\
+    4. Audit, industrialisation \& handover & 1 Dec 2026 -- 15 Jan 2027 & Planned \\
     \hline
   \end{tabularx}
   \caption{Roadmap phases and status at the time of writing}
