@@ -8,23 +8,23 @@
 % ============================================================
 \documentclass[a4paper,12pt,oneside]{report}
 
-% ---------- Language & encoding ----------
+% Language & encoding
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-% ---------- Typography (Springer Nature LaTeX template font stack) ----------
+% Typography (Springer Nature LaTeX template font stack)
 % Times-based text + math fonts, as used by Springer Nature's own
 % sn-jnl template (newtxtext/newtxmath rather than the LaTeX default).
 \usepackage{newtxtext}
 \usepackage[varvw]{newtxmath}
 
-% ---------- Page layout ----------
+% Page layout
 \usepackage[margin=2.5cm,headheight=14pt]{geometry}
 \usepackage{setspace}
 \onehalfspacing
 
-% ---------- Chapter titles ----------
+% Chapter titles
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
   {\normalfont\huge\bfseries\color{ucacred}}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
@@ -34,7 +34,7 @@
 \titleformat{\subsection}
   {\normalfont\large\bfseries\color{ucacred}}{\thesubsection}{1em}{}
 
-% ---------- Headers / footers ----------
+% Headers / footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
@@ -42,7 +42,7 @@
 \fancyhead[R]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
-% ---------- Colors & links ----------
+% Colors & links
 \usepackage[table]{xcolor}
 \definecolor{ucacred}{HTML}{990000}
 \definecolor{accent}{HTML}{990000}
@@ -54,7 +54,7 @@
   bookmarksopen=true
 ]{hyperref}
 
-% ---------- Images, tables, code ----------
+% Images, tables, code
 \usepackage{graphicx}
 \graphicspath{{images/}}
 \usepackage{booktabs}
@@ -79,13 +79,14 @@
 }
 \lstset{style=devops}
 
-% ---------- Appendices ----------
+% Appendices
 \usepackage[toc,page]{appendix}
 
-% ---------- Title page design ----------
+% Title page design
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
 \usepackage{eso-pic} % cover page border
 
 \begin{document}

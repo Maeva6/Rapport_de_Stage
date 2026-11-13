@@ -14,5 +14,15 @@
   \item[Fail2ban] Service that temporarily bans an IP address after repeated suspicious login attempts.
   \item[cloud-init] Cloud instance initialisation tool; on Ubuntu it can drop configuration files (e.g. under \texttt{/etc/ssh/sshd\_config.d/}) that silently override manual edits to the main configuration file.
   \item[Webhook] Automatic HTTP notification sent by a service to a URL whenever a given event occurs.
+  \item[Named Tunnel] A Cloudflare Tunnel with a fixed identity and credentials, bound to a domain name, whose public address survives restarts (unlike a Quick Tunnel, whose address is regenerated each time).
+  \item[Ingress rule] Entry of a tunnel configuration that maps a public host name to an internal service; any host name without a rule receives a 404 error.
+  \item[GitLab CE] Open-source platform for hosting Git repositories, with issue tracking and CI/CD runners.
+  \item[ACL (Access Control List)] Fine-grained file permissions on Linux, letting a specific user (here Jenkins) access a folder without changing its owner or group.
+  \item[CSRF (Cross-Site Request Forgery)] Attack in which a malicious site makes a user's browser send an unwanted request; applications defend against it with a token tied to the session cookie, and reject a request without a valid one (HTTP 422 in GitLab).
+  \item[HSTS (HTTP Strict Transport Security)] Header that tells browsers to always use HTTPS for a site.
+  \item[DNSSEC] Extension of the DNS that signs records so that their authenticity can be verified.
+  \item[Hairpin] Network path in which a container calls the address of its own host machine and the traffic must turn around on the same interface; Docker often drops it, which is solved by an alias pointing to the host.
+  \item[Reverse proxy] Component that receives client requests and forwards them to the right internal service according to the host name (here the tunnel configuration; Traefik is the alternative kept for a public IP address).
+  \item[Drop-in file] Small configuration file placed in a dedicated folder (such as \texttt{sshd\_config.d}) that is read together with the main file; the order of reading decides which value wins.
   % TODO: extend this list as new technical terms appear while writing.
 \end{description}

@@ -1,8 +1,29 @@
 \chapter{Architecture diagram}
 \label{annexe:architecture}
 
-% TODO: insert the full diagram (Proxmox -> VM -> containers ->
-% tunnel/Traefik -> applications). A PNG/PDF export is enough.
-% \includegraphics[width=\textwidth]{architecture_diagram.png}
+Figure~\ref{fig:archi-annexe} shows the platform at the time of writing: the physical server runs two virtual machines, each of which opens its own outbound tunnel to Cloudflare. No inbound port is opened on the network, which is what makes publication possible behind the shared Starlink connection (CGNAT).
 
-[Architecture diagram to be added here.]
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw, thick, rounded corners=1pt, minimum height=0.9cm, align=center, font=\small},
+  vm/.style={draw, thick, rounded corners=1pt, align=center, font=\small, fill=ucacred!6, text width=4.6cm, minimum height=2.8cm},
+  arr/.style={-{Latex[length=2mm]}}
+]
+\node[box, minimum width=10.5cm] (users) at (0,0) {Users on the Internet (browser, mobile data)};
+\node[box, minimum width=10.5cm] (cf) at (0,-1.7) {Cloudflare\\\footnotesize DNS, HTTPS certificate, tunnels for \texttt{ucac-icam.info}};
+\draw[arr] (users) -- (cf);
+
+\node[vm] (dvm) at (-2.9,-5.3) {\textbf{deploy-vm}\\[2pt]\footnotesize Supervision dashboard (Docker)\\ Jenkins\\ Traefik (kept for a public IP)\\ \texttt{cloudflared} container};
+\node[vm] (gvm) at (2.9,-5.3) {\textbf{gitlab-vm}\\[2pt]\footnotesize GitLab CE (Docker)\\ Runners for the other interns\\ \texttt{cloudflared} container};
+
+\node[draw, dashed, thick, rounded corners=3pt, inner sep=0.35cm, fit=(dvm)(gvm), label={[font=\small\bfseries]below:Physical server (Proxmox VE)}] (px) {};
+
+\draw[arr] (dvm.north) -- node[midway, left, font=\scriptsize]{outbound tunnel} (dvm.north |- cf.south);
+\draw[arr] (gvm.north) -- node[midway, right, font=\scriptsize]{outbound tunnel} (gvm.north |- cf.south);
+\end{tikzpicture}
+\caption{Architecture of the platform: physical server, virtual machines, containers and tunnels.}
+\label{fig:archi-annexe}
+\end{figure}
+
+Published addresses: \texttt{dashboard.ucac-icam.info} (dashboard, tunnel \texttt{info-control-center}) and \texttt{gitlab.ucac-icam.info} (GitLab, tunnel \texttt{info-gitlab}). Git over SSH (port 2222) and the administration interfaces of Jenkins and Traefik stay on the local network.

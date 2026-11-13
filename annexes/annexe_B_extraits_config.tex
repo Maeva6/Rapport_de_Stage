@@ -1,32 +1,96 @@
 \chapter{Configuration excerpts}
 \label{annexe:config}
 
-Sensitive values (tokens, passwords) are kept out of this report; every excerpt below is copied as-is from the working configuration, with only such values removed.
+Sensitive values (tokens, passwords, tunnel identifiers) are kept out of this report; every excerpt below is copied from the working configuration, with only such values removed.
 
-\section{docker-compose.yml (Cloudflare Tunnel service)}
+\section{docker-compose.yml (dashboard port and Cloudflare Named Tunnel)}
 \begin{lstlisting}
+control-center:
+  ports:
+    # Published only on the LAN address: Docker bypasses UFW
+    # for published ports (format IP:hostPort:containerPort).
+    - "192.168.x.x:3000:3000"
+
 cloudflared:
   image: cloudflare/cloudflared:latest
   container_name: devops-cloudflared
   restart: unless-stopped
   # --protocol http2: the default protocol (QUIC/UDP) drops
   # frequently on a satellite link (Starlink), whose NAT closes
-  # idle UDP sessions -- HTTP/2 (TCP) is more stable here.
-  command: tunnel --no-autoupdate --protocol http2 --url http://control-center:3000
+  # idle UDP sessions; HTTP/2 (TCP) is more stable here.
+  # user 1000:1000 lets the container read the credentials file (mode 600).
+  user: "1000:1000"
+  command: tunnel --no-autoupdate --protocol http2 --config /etc/cloudflared/config.yml run info-control-center
+  volumes:
+    - /home/<user>/.cloudflared/config.yml:/etc/cloudflared/config.yml:ro
+    - /home/<user>/.cloudflared/credentials.json:/etc/cloudflared/credentials.json:ro
   depends_on:
     - control-center
   networks:
     - devops-net
 \end{lstlisting}
 
-\section{Jenkinsfile (Test stage)}
+\section{Tunnel configuration (config.yml)}
+\begin{lstlisting}
+tunnel: info-control-center
+credentials-file: /etc/cloudflared/credentials.json
+ingress:
+  - hostname: dashboard.ucac-icam.info
+    service: http://control-center:3000
+  - service: http_status:404
+\end{lstlisting}
+
+\section{Jenkinsfile (Test and Health check stages)}
 \begin{lstlisting}
 stage('Test') {
   steps {
     sh 'docker run --rm -v "$WORKSPACE":/app -w /app node:20-alpine sh -c "npm ci && npm test"'
   }
 }
+
+stage('Health check') {
+  steps {
+    sh '''
+      for i in 1 2 3 4 5 6; do
+        if docker exec devops-control-center wget -qO- http://127.0.0.1:3000/health; then
+          exit 0
+        fi
+        sleep 5
+      done
+      exit 1
+    '''
+  }
+}
 \end{lstlisting}
+
+\section{GitLab behind an external HTTPS (docker-compose.yml, excerpt)}
+\begin{lstlisting}
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    restart: unless-stopped
+    hostname: 'gitlab.ucac-icam.info'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.ucac-icam.info'
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        letsencrypt['enable'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+    ports:
+      - '192.168.x.x:80:80'
+      - '192.168.x.x:2222:22'
+\end{lstlisting}
+
+\section{SSH hardening (/etc/ssh/sshd\_config.d/00-hardening.conf)}
+\begin{lstlisting}
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitRootLogin no
+\end{lstlisting}
+
+The file name starts with \texttt{00} so that it is read before any other file of the folder, since the SSH daemon keeps the first value it reads for each option. The effective result is checked with \texttt{sudo sshd -T}.
 
 \section{UFW rules (excerpt, after hardening)}
 \begin{lstlisting}
@@ -38,3 +102,5 @@ stage('Test') {
 [ 6] 8080/tcp                   ALLOW IN    192.168.1.0/24        # Traefik dashboard - LAN only
 [ 7] 8081/tcp                   ALLOW IN    192.168.1.0/24        # Jenkins - LAN only
 \end{lstlisting}
+
+These rules do not cover ports that Docker publishes itself, which is why the dashboard port is also bound to the local network address in the Compose file (see chapter~\ref{chap:securisation}).

@@ -1,17 +1,19 @@
 \chapter{Setting up the infrastructure}
 \label{chap:infra}
-% Corresponds to phase 01 of the roadmap (foundation).
+% Corresponds to phase 01 of the roadmap (foundation), extended in phases 02 and 03.
 
 \section{Overall architecture}
-The platform is organised in three layers: the physical server running Proxmox VE (the hypervisor), a single Ubuntu Server guest virtual machine (\texttt{deploy-vm}) that hosts everything else, and, inside that VM, a set of Docker containers -- one per service or application. See Appendix~\ref{annexe:architecture} for the full architecture diagram. This layered approach keeps the physical host untouched by application-level changes: everything that evolves day to day (adding an application, changing a configuration) happens inside the VM or inside a container, while the hypervisor layer stays stable.
+The platform is organised in three layers: the physical server running Proxmox VE (the hypervisor), Ubuntu Server guest virtual machines, and, inside those machines, a set of Docker containers -- one per service or application. Two virtual machines are in use: \texttt{deploy-vm}, which hosts the supervision dashboard, Jenkins and the reverse proxy, and \texttt{gitlab-vm}, which hosts GitLab for the other interns (chapter~\ref{chap:multiapps}). See Appendix~\ref{annexe:architecture} for the full architecture diagram. This layered approach keeps the physical host untouched by application-level changes: everything that evolves day to day (adding an application, changing a configuration) happens inside a VM or inside a container, while the hypervisor layer stays stable.
 
-One practical consequence of running on a home/shared network worth noting here: the VM's local IP address changed during the internship (from \texttt{192.168.1.130} to \texttt{192.168.1.98}) following a change of network. Every place in the documentation and in the application that referenced the old address had to be located and updated -- a good illustration of why later chapters favour mechanisms that do not depend on a fixed IP address (Cloudflare Tunnel, see chapter~\ref{chap:securisation}).
+One practical consequence of running on a shared network worth noting here: the local IP address of \texttt{deploy-vm} changed during the internship following a change of network (it went from \texttt{192.168.1.130} to \texttt{192.168.1.98}, and later to another address in the same subnet). Every place in the documentation and in the application that referenced the old address had to be located and updated -- a good illustration of why later chapters favour mechanisms that do not depend on a fixed IP address (Cloudflare Tunnel, see chapter~\ref{chap:securisation}), and why \texttt{gitlab-vm} was given a static address from the start.
 
 \section{Preparing the physical server (Proxmox VE)}
-The physical server already had Proxmox VE installed and reachable on the local network before the internship began (see chapter~\ref{chap:contexte}). The work here consisted of confirming the storage and network configuration inherited from that base install, and creating an API token (with the read-only \texttt{PVEAuditor} role) so that the supervision dashboard developed later could query the hypervisor's status without holding full administrative rights over it.
+The physical server already had Proxmox VE installed and reachable on the local network before the internship began (see chapter~\ref{chap:contexte}). The work here consisted of confirming the storage and network configuration inherited from that base install, and creating an API token (with the read-only \texttt{PVEAuditor} role) so that the supervision dashboard developed later could query the hypervisor's status without holding full administrative rights over it. Both virtual machines were also set to start automatically with the physical server (\texttt{qm set <VMID> --onboot 1}), so that a power cut does not leave the platform down until someone intervenes by hand.
 
-\section{Creating and configuring the Ubuntu VM}
-A single Ubuntu Server virtual machine, \texttt{deploy-vm}, was created to host every application. Its base configuration follows standard hardening practice for a freshly provisioned machine: a dedicated non-root user for day-to-day operations, the system kept up to date, and SSH access enabled from the very first boot (later hardened further, see chapter~\ref{chap:securisation}).
+\section{Creating and configuring the Ubuntu VMs}
+\texttt{deploy-vm} was created first and hosts everything related to deployment. Its base configuration follows standard hardening practice for a freshly provisioned machine: a dedicated non-root user for day-to-day operations, the system kept up to date, and SSH access enabled from the very first boot (later hardened further, see chapter~\ref{chap:securisation}).
+
+\texttt{gitlab-vm} was created later for GitLab, with 4 virtual CPUs, 8~GB of memory and a 50~GB disk. Its network address is fixed through \texttt{netplan}, and every change to it is applied with \texttt{netplan try} rather than \texttt{netplan apply}: the former rolls back automatically if the connection is lost within a delay, which prevents a typing mistake from cutting the SSH session on a machine that can only be reached through the network.
 
 \section{Containerising with Docker}
 Every application on the server runs as a Docker container, orchestrated with Docker Compose. This choice was made for three reasons: it isolates each application's dependencies from the others and from the host; it makes a deployment reproducible (the exact same \texttt{docker-compose.yml} can be re-run on a fresh machine); and it keeps the update path simple -- a new version is a rebuild and a restart, not a manual reinstall.
@@ -20,5 +22,7 @@ Every application on the server runs as a Docker container, orchestrated with Do
 docker compose up -d --build
 curl -s http://localhost:3000/health
 \end{lstlisting}
+
+Two Docker behaviours that are easy to overlook shaped the configuration. First, when a file mounted into a container does not exist yet on the host, Docker silently creates an \emph{empty folder} with that name instead of failing, which then breaks the application in a way that is hard to trace back; every file that a container mounts is therefore created \emph{before} the first start. Second, a \texttt{HEALTHCHECK} that calls \texttt{localhost} may resolve to the IPv6 address while the application only listens on IPv4, making a healthy container look broken; the check uses \texttt{127.0.0.1} explicitly.
 
 \clearpage
